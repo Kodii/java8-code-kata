@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.junit.Test;
 
@@ -24,7 +25,8 @@ public class Exercise4Test extends ClassicOnlineStore {
 		 * {@link Stream#findFirst} The customerList are ascending ordered by registered
 		 * timing.
 		 */
-		Optional<Customer> firstCustomer = null;
+		Optional<Customer> firstCustomer = customerList.stream()
+			.findFirst();
 
 		assertThat(firstCustomer.get(), is(customerList.get(0)));
 	}
@@ -38,7 +40,9 @@ public class Exercise4Test extends ClassicOnlineStore {
 		 * Check whether any customer older than 40 exists or not, by using
 		 * {@link Stream#anyMatch}
 		 */
-		boolean olderThan40Exists = true;
+		Predicate<Customer> customerIsAboveFortyYears = p -> p.getAge() > 40;
+		boolean olderThan40Exists = customerList.stream()
+			.anyMatch(customerIsAboveFortyYears);
 
 		assertThat(olderThan40Exists, is(false));
 	}
@@ -52,7 +56,9 @@ public class Exercise4Test extends ClassicOnlineStore {
 		 * Check whether all customer are older than 20 or not, by using
 		 * {@link Stream#allMatch}
 		 */
-		boolean allOlderThan20 = false;
+		Predicate<? super Customer> customersAreAboveTwentyYears = p -> p.getAge() > 20;
+		boolean allOlderThan20 = customerList.stream()
+			.allMatch(customersAreAboveTwentyYears);
 
 		assertThat(allOlderThan20, is(true));
 	}
@@ -66,7 +72,9 @@ public class Exercise4Test extends ClassicOnlineStore {
 		 * Confirm that none of the customer has empty list for their
 		 * {@link Customer.wantToBuy} by using {@link Stream#noneMatch}
 		 */
-		boolean everyoneWantsSomething = false;
+		boolean everyoneWantsSomething = customerList.stream()
+			.noneMatch(p -> p.getWantToBuy()
+				.isEmpty());
 
 		assertThat(everyoneWantsSomething, is(true));
 	}
